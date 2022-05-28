@@ -172,7 +172,7 @@ contract ERC721PresetMinterPauserAutoIdUpgradeable is
         _baseTokenURI = baseTokenURI;
     }
 
-    function _mintMulti(address to, amount) private {
+    function _mintMulti(address to, uint256 amount) private {
         for (uint256 j = 0; j < amount; j++) {
             _mint(to, _tokenIdTracker.current());
             _tokenIdTracker.increment();
