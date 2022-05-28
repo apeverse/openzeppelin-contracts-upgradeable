@@ -172,18 +172,28 @@ contract ERC721PresetMinterPauserAutoIdUpgradeable is
         _baseTokenURI = baseTokenURI;
     }
 
+    function _mintMulti(address to, amount) private {
+        for (uint256 j = 0; j < amount; j++) {
+            _mint(to, _tokenIdTracker.current());
+            _tokenIdTracker.increment();
+        }
+    }
+    
     function mintMulti(address[] memory to, uint256[] memory amount) external {
         require(to.length == amount.length, "ERC721PresetMinterPauserAutoId: arguments error");
         require(hasRole(MINTER_ROLE, _msgSender()), "ERC721PresetMinterPauserAutoId: must have minter role to mint");
         
         for (uint256 i = 0; i < to.length; i++) {
-            for (uint256 j = 0; j < amount[i]; j++) {
-                // mint(to[i]); // require MINTER_ROLE
-                _mint(to[i], _tokenIdTracker.current());
-                _tokenIdTracker.increment();
-            }
+            _mintMulti(to[i], amount[i]);
         }
-        
+    }
+
+    function mintMultiSameAmount(address[] memory to, uint256 amount) external {
+        require(hasRole(MINTER_ROLE, _msgSender()), "ERC721PresetMinterPauserAutoId: must have minter role to mint");
+
+        for (uint256 i = 0; i < to.length; i++) {
+            _mintMulti(to[i], amount);
+        }
     }
 
     /**
