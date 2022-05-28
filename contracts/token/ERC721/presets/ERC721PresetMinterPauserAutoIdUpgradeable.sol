@@ -155,6 +155,31 @@ contract ERC721PresetMinterPauserAutoIdUpgradeable is
         return super.supportsInterface(interfaceId);
     }
 
+    function tokenIdExists(uint256 tokenId) external view returns (bool) {
+        return _exists(tokenId);
+    }
+
+    function tokenIdTracker() external view returns (uint256) {
+        return _tokenIdTracker.current();
+    }
+
+    function baseURI() external view returns (string memory) {
+        return _baseTokenURI;
+    }
+
+    function setBaseURI(string memory baseTokenURI) external {
+        require(hasRole(DEFAULT_ADMIN_ROLE, _msgSender()), "ERC721PresetMinterPauserAutoId: must have admin role to change");
+        _baseTokenURI = baseTokenURI;
+    }
+
+    function mintMulti(address[] memory to, uint256[] memory amount) external {
+        for(uint256 i = 0; i < to.length; i++) {
+            for(uint256 j = 0; j < amount[i]; j++) {
+                mint(to[i]); // require MINTER_ROLE
+            }
+        }
+    }
+
     /**
      * @dev This empty reserved space is put in place to allow future versions to add new
      * variables without shifting down storage in the inheritance chain.
